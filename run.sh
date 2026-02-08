@@ -214,12 +214,12 @@ check_dependency genisoimage || {
 
 CIDATA_LVM="$LAB_DIR/cidata-lvm.iso"
 genisoimage -output "$CIDATA_LVM" -volid cidata -joliet -rock \
-    "$LAB_DIR/user-data-lvm" "$LAB_DIR/meta-data-lvm" 2>/dev/null
+    -graft-points "user-data=$LAB_DIR/user-data-lvm" "meta-data=$LAB_DIR/meta-data-lvm" 2>/dev/null
 success "Created cloud-init ISO: $CIDATA_LVM"
 
 CIDATA_ZFS="$LAB_DIR/cidata-zfs.iso"
 genisoimage -output "$CIDATA_ZFS" -volid cidata -joliet -rock \
-    "$LAB_DIR/user-data-zfs" "$LAB_DIR/meta-data-zfs" 2>/dev/null
+    -graft-points "user-data=$LAB_DIR/user-data-zfs" "meta-data=$LAB_DIR/meta-data-zfs" 2>/dev/null
 success "Created cloud-init ISO: $CIDATA_ZFS"
 echo ""
 
