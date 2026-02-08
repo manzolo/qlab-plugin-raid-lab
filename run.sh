@@ -97,31 +97,31 @@ packages:
 write_files:
   - path: /etc/motd.raw
     content: |
-      \033[1;36m=============================================\033[0m
-        \033[1;32mraid-lab-lvm\033[0m — \033[1mLVM Disk Management Lab\033[0m
-      \033[1;36m=============================================\033[0m
+      \\033[1;36m=============================================\\033[0m
+        \\033[1;32mraid-lab-lvm\\033[0m — \\033[1mLVM Disk Management Lab\\033[0m
+      \\033[1;36m=============================================\\033[0m
 
-        \033[1;33mObjectives:\033[0m
+        \\033[1;33mObjectives:\\033[0m
           - Create Physical Volumes (PV)
           - Create a Volume Group (VG)
           - Create and resize Logical Volumes (LV)
           - Understand LVM striping and mirroring
 
-        \033[1;33mAvailable disks:\033[0m  /dev/vdb, /dev/vdc, /dev/vdd, /dev/vde (1G each)
+        \\033[1;33mAvailable disks:\\033[0m  /dev/vdb, /dev/vdc, /dev/vdd, /dev/vde (1G each)
 
-        \033[1;33mUseful commands:\033[0m
-          \033[0;36mlsblk\033[0m                          list block devices
-          \033[0;36msudo pvcreate /dev/vdb\033[0m          create physical volume
-          \033[0;36msudo pvs\033[0m                        list physical volumes
-          \033[0;36msudo vgcreate myvg /dev/vdb /dev/vdc\033[0m  create volume group
-          \033[0;36msudo vgs\033[0m                        list volume groups
-          \033[0;36msudo lvcreate -L 500M -n mylv myvg\033[0m   create logical volume
-          \033[0;36msudo lvs\033[0m                        list logical volumes
+        \\033[1;33mUseful commands:\\033[0m
+          \\033[0;36mlsblk\\033[0m                          list block devices
+          \\033[0;36msudo pvcreate /dev/vdb\\033[0m          create physical volume
+          \\033[0;36msudo pvs\\033[0m                        list physical volumes
+          \\033[0;36msudo vgcreate myvg /dev/vdb /dev/vdc\\033[0m  create volume group
+          \\033[0;36msudo vgs\\033[0m                        list volume groups
+          \\033[0;36msudo lvcreate -L 500M -n mylv myvg\\033[0m   create logical volume
+          \\033[0;36msudo lvs\\033[0m                        list logical volumes
 
-        \033[1;33mCredentials:\033[0m  \033[1mlabuser\033[0m / \033[1mlabpass\033[0m
-        \033[1;33mExit:\033[0m        type '\033[1mexit\033[0m'
+        \\033[1;33mCredentials:\\033[0m  \\033[1mlabuser\\033[0m / \\033[1mlabpass\\033[0m
+        \\033[1;33mExit:\\033[0m        type '\\033[1mexit\\033[0m'
 
-      \033[1;36m=============================================\033[0m
+      \\033[1;36m=============================================\\033[0m
 
 
 runcmd:
@@ -161,32 +161,32 @@ packages:
 write_files:
   - path: /etc/motd.raw
     content: |
-      \033[1;36m=============================================\033[0m
-        \033[1;32mraid-lab-zfs\033[0m — \033[1mZFS Storage Lab\033[0m
-      \033[1;36m=============================================\033[0m
+      \\033[1;36m=============================================\\033[0m
+        \\033[1;32mraid-lab-zfs\\033[0m — \\033[1mZFS Storage Lab\\033[0m
+      \\033[1;36m=============================================\\033[0m
 
-        \033[1;33mObjectives:\033[0m
+        \\033[1;33mObjectives:\\033[0m
           - Create a ZFS pool (mirror, raidz)
           - Create datasets and set properties
           - Take snapshots and rollback
           - Practice send/receive
 
-        \033[1;33mAvailable disks:\033[0m  /dev/vdb, /dev/vdc, /dev/vdd, /dev/vde (1G each)
+        \\033[1;33mAvailable disks:\\033[0m  /dev/vdb, /dev/vdc, /dev/vdd, /dev/vde (1G each)
 
-        \033[1;33mUseful commands:\033[0m
-          \033[0;36mlsblk\033[0m                          list block devices
-          \033[0;36msudo zpool create mypool mirror /dev/vdb /dev/vdc\033[0m
-          \033[0;36msudo zpool status\033[0m               pool status
-          \033[0;36msudo zpool list\033[0m                 list pools
-          \033[0;36msudo zfs create mypool/data\033[0m     create dataset
-          \033[0;36msudo zfs list\033[0m                   list datasets
-          \033[0;36msudo zfs snapshot mypool/data@snap1\033[0m  take snapshot
-          \033[0;36msudo zfs rollback mypool/data@snap1\033[0m  rollback
+        \\033[1;33mUseful commands:\\033[0m
+          \\033[0;36mlsblk\\033[0m                          list block devices
+          \\033[0;36msudo zpool create mypool mirror /dev/vdb /dev/vdc\\033[0m
+          \\033[0;36msudo zpool status\\033[0m               pool status
+          \\033[0;36msudo zpool list\\033[0m                 list pools
+          \\033[0;36msudo zfs create mypool/data\\033[0m     create dataset
+          \\033[0;36msudo zfs list\\033[0m                   list datasets
+          \\033[0;36msudo zfs snapshot mypool/data@snap1\\033[0m  take snapshot
+          \\033[0;36msudo zfs rollback mypool/data@snap1\\033[0m  rollback
 
-        \033[1;33mCredentials:\033[0m  \033[1mlabuser\033[0m / \033[1mlabpass\033[0m
-        \033[1;33mExit:\033[0m        type '\033[1mexit\033[0m'
+        \\033[1;33mCredentials:\\033[0m  \\033[1mlabuser\\033[0m / \\033[1mlabpass\\033[0m
+        \\033[1;33mExit:\\033[0m        type '\\033[1mexit\\033[0m'
 
-      \033[1;36m=============================================\033[0m
+      \\033[1;36m=============================================\\033[0m
 
 
 runcmd:
