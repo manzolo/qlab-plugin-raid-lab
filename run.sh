@@ -80,7 +80,7 @@ echo ""
 # --- LVM VM cloud-init ---
 info "Creating cloud-init for $LVM_VM..."
 
-cat > "$LAB_DIR/user-data-lvm" <<'USERDATA'
+cat > "$LAB_DIR/user-data-lvm" <<USERDATA
 #cloud-config
 hostname: raid-lab-lvm
 users:
@@ -89,6 +89,8 @@ users:
     lock_passwd: false
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
+    ssh_authorized_keys:
+      - "${QLAB_SSH_PUB_KEY:-}"
 ssh_pwauth: true
 packages:
   - lvm2
@@ -142,7 +144,7 @@ success "Created cloud-init for $LVM_VM"
 # --- ZFS VM cloud-init ---
 info "Creating cloud-init for $ZFS_VM..."
 
-cat > "$LAB_DIR/user-data-zfs" <<'USERDATA'
+cat > "$LAB_DIR/user-data-zfs" <<USERDATA
 #cloud-config
 hostname: raid-lab-zfs
 users:
@@ -151,6 +153,8 @@ users:
     lock_passwd: false
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
+    ssh_authorized_keys:
+      - "${QLAB_SSH_PUB_KEY:-}"
 ssh_pwauth: true
 packages:
   - zfsutils-linux
