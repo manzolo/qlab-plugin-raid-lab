@@ -80,7 +80,7 @@ echo ""
 # --- LVM VM cloud-init ---
 info "Creating cloud-init for $LVM_VM..."
 
-cat > "$LAB_DIR/user-data-lvm" <<USERDATA
+cat > "$LAB_DIR/user-data-lvm" <<'USERDATA'
 #cloud-config
 hostname: raid-lab-lvm
 users:
@@ -90,49 +90,52 @@ users:
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
     ssh_authorized_keys:
-      - "${QLAB_SSH_PUB_KEY:-}"
+      - "__QLAB_SSH_PUB_KEY__"
 ssh_pwauth: true
 packages:
   - lvm2
 write_files:
   - path: /etc/motd.raw
     content: |
-      \\033[1;36m=============================================\\033[0m
-        \\033[1;32mraid-lab-lvm\\033[0m — \\033[1mLVM Disk Management Lab\\033[0m
-      \\033[1;36m=============================================\\033[0m
+      \033[1;36m=============================================\033[0m
+        \033[1;32mraid-lab-lvm\033[0m — \033[1mLVM Disk Management Lab\033[0m
+      \033[1;36m=============================================\033[0m
 
-        \\033[1;33mObjectives:\\033[0m
+        \033[1;33mObjectives:\033[0m
           - Create Physical Volumes (PV)
           - Create a Volume Group (VG)
           - Create and resize Logical Volumes (LV)
           - Understand LVM striping and mirroring
 
-        \\033[1;33mAvailable disks:\\033[0m  /dev/vdb, /dev/vdc, /dev/vdd, /dev/vde (1G each)
+        \033[1;33mAvailable disks:\033[0m  /dev/vdb, /dev/vdc, /dev/vdd, /dev/vde (1G each)
 
-        \\033[1;33mUseful commands:\\033[0m
-          \\033[0;36mlsblk\\033[0m                          list block devices
-          \\033[0;36msudo pvcreate /dev/vdb\\033[0m          create physical volume
-          \\033[0;36msudo pvs\\033[0m                        list physical volumes
-          \\033[0;36msudo vgcreate myvg /dev/vdb /dev/vdc\\033[0m  create volume group
-          \\033[0;36msudo vgs\\033[0m                        list volume groups
-          \\033[0;36msudo lvcreate -L 500M -n mylv myvg\\033[0m   create logical volume
-          \\033[0;36msudo lvs\\033[0m                        list logical volumes
+        \033[1;33mUseful commands:\033[0m
+          \033[0;36mlsblk\033[0m                          list block devices
+          \033[0;36msudo pvcreate /dev/vdb\033[0m          create physical volume
+          \033[0;36msudo pvs\033[0m                        list physical volumes
+          \033[0;36msudo vgcreate myvg /dev/vdb /dev/vdc\033[0m  create volume group
+          \033[0;36msudo vgs\033[0m                        list volume groups
+          \033[0;36msudo lvcreate -L 500M -n mylv myvg\033[0m   create logical volume
+          \033[0;36msudo lvs\033[0m                        list logical volumes
 
-        \\033[1;33mCredentials:\\033[0m  \\033[1mlabuser\\033[0m / \\033[1mlabpass\\033[0m
-        \\033[1;33mExit:\\033[0m        type '\\033[1mexit\\033[0m'
+        \033[1;33mCredentials:\033[0m  \033[1mlabuser\033[0m / \033[1mlabpass\033[0m
+        \033[1;33mExit:\033[0m        type '\033[1mexit\033[0m'
 
-      \\033[1;36m=============================================\\033[0m
+      \033[1;36m=============================================\033[0m
 
 
 runcmd:
   - chmod -x /etc/update-motd.d/*
-  - "sed -i 's/^#\\?PrintMotd.*/PrintMotd yes/' /etc/ssh/sshd_config"
-  - "sed -i 's/^session.*pam_motd.*/# &/' /etc/pam.d/sshd"
-  - 'printf ''%b'' "$(cat /etc/motd.raw)" > /etc/motd'
+  - sed -i 's/^#\?PrintMotd.*/PrintMotd yes/' /etc/ssh/sshd_config
+  - sed -i 's/^session.*pam_motd.*/# &/' /etc/pam.d/sshd
+  - printf '%b' "$(cat /etc/motd.raw)" > /etc/motd
   - rm -f /etc/motd.raw
   - systemctl restart sshd
   - echo "=== raid-lab-lvm VM is ready! ==="
 USERDATA
+
+# Inject the SSH public key into user-data
+sed -i "s|__QLAB_SSH_PUB_KEY__|${QLAB_SSH_PUB_KEY:-}|g" "$LAB_DIR/user-data-lvm"
 
 cat > "$LAB_DIR/meta-data-lvm" <<METADATA
 instance-id: ${LVM_VM}-001
@@ -144,7 +147,7 @@ success "Created cloud-init for $LVM_VM"
 # --- ZFS VM cloud-init ---
 info "Creating cloud-init for $ZFS_VM..."
 
-cat > "$LAB_DIR/user-data-zfs" <<USERDATA
+cat > "$LAB_DIR/user-data-zfs" <<'USERDATA'
 #cloud-config
 hostname: raid-lab-zfs
 users:
@@ -154,51 +157,52 @@ users:
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
     ssh_authorized_keys:
-      - "${QLAB_SSH_PUB_KEY:-}"
+      - "__QLAB_SSH_PUB_KEY__"
 ssh_pwauth: true
 packages:
   - zfsutils-linux
 write_files:
   - path: /etc/motd.raw
     content: |
-      \\033[1;36m=============================================\\033[0m
-        \\033[1;32mraid-lab-zfs\\033[0m — \\033[1mZFS Storage Lab\\033[0m
-      \\033[1;36m=============================================\\033[0m
+      \033[1;36m=============================================\033[0m
+        \033[1;32mraid-lab-zfs\033[0m — \033[1mZFS File System Lab\033[0m
+      \033[1;36m=============================================\033[0m
 
-        \\033[1;33mObjectives:\\033[0m
-          - Create a ZFS pool (mirror, raidz)
-          - Create datasets and set properties
-          - Take snapshots and rollback
-          - Practice send/receive
+        \033[1;33mObjectives:\033[0m
+          - Create ZFS pools (zpool)
+          - Create and manage ZFS datasets
+          - Understand snapshots and rollbacks
+          - Explore compression and deduplication
 
-        \\033[1;33mAvailable disks:\\033[0m  /dev/vdb, /dev/vdc, /dev/vdd, /dev/vde (1G each)
+        \033[1;33mAvailable disks:\033[0m  /dev/vdb, /dev/vdc, /dev/vdd, /dev/vde (1G each)
 
-        \\033[1;33mUseful commands:\\033[0m
-          \\033[0;36mlsblk\\033[0m                          list block devices
-          \\033[0;36msudo zpool create mypool mirror /dev/vdb /dev/vdc\\033[0m
-          \\033[0;36msudo zpool status\\033[0m               pool status
-          \\033[0;36msudo zpool list\\033[0m                 list pools
-          \\033[0;36msudo zfs create mypool/data\\033[0m     create dataset
-          \\033[0;36msudo zfs list\\033[0m                   list datasets
-          \\033[0;36msudo zfs snapshot mypool/data@snap1\\033[0m  take snapshot
-          \\033[0;36msudo zfs rollback mypool/data@snap1\\033[0m  rollback
+        \033[1;33mUseful commands:\033[0m
+          \033[0;36msudo zpool create mypool /dev/vdb\033[0m   create pool
+          \033[0;36msudo zpool list\033[0m                 list pools
+          \033[0;36msudo zfs create mypool/data\033[0m     create dataset
+          \033[0;36msudo zfs list\033[0m                   list datasets
+          \033[0;36msudo zfs snapshot mypool/data@snap1\033[0m  take snapshot
+          \033[0;36msudo zfs rollback mypool/data@snap1\033[0m  rollback
 
-        \\033[1;33mCredentials:\\033[0m  \\033[1mlabuser\\033[0m / \\033[1mlabpass\\033[0m
-        \\033[1;33mExit:\\033[0m        type '\\033[1mexit\\033[0m'
+        \033[1;33mCredentials:\033[0m  \033[1mlabuser\033[0m / \033[1mlabpass\033[0m
+        \033[1;33mExit:\033[0m        type '\033[1mexit\033[0m'
 
-      \\033[1;36m=============================================\\033[0m
+      \033[1;36m=============================================\033[0m
 
 
 runcmd:
   - chmod -x /etc/update-motd.d/*
-  - "sed -i 's/^#\\?PrintMotd.*/PrintMotd yes/' /etc/ssh/sshd_config"
-  - "sed -i 's/^session.*pam_motd.*/# &/' /etc/pam.d/sshd"
-  - 'printf ''%b'' "$(cat /etc/motd.raw)" > /etc/motd'
+  - sed -i 's/^#\?PrintMotd.*/PrintMotd yes/' /etc/ssh/sshd_config
+  - sed -i 's/^session.*pam_motd.*/# &/' /etc/pam.d/sshd
+  - printf '%b' "$(cat /etc/motd.raw)" > /etc/motd
   - rm -f /etc/motd.raw
   - systemctl restart sshd
   - modprobe zfs 2>/dev/null || true
   - echo "=== raid-lab-zfs VM is ready! ==="
 USERDATA
+
+# Inject the SSH public key into user-data
+sed -i "s|__QLAB_SSH_PUB_KEY__|${QLAB_SSH_PUB_KEY:-}|g" "$LAB_DIR/user-data-zfs"
 
 cat > "$LAB_DIR/meta-data-zfs" <<METADATA
 instance-id: ${ZFS_VM}-001
