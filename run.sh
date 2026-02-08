@@ -121,6 +121,7 @@ write_files:
 
       \033[1;36m=============================================\033[0m
 
+
 runcmd:
   - chmod -x /etc/update-motd.d/*
   - "sed -i 's/^#\\?PrintMotd.*/PrintMotd yes/' /etc/ssh/sshd_config"
