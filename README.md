@@ -8,8 +8,10 @@ A [QLab](https://github.com/manzolo/qlab) plugin that creates two virtual machin
 
 | VM | SSH Port | Packages | Purpose |
 |----|----------|----------|---------|
-| `raid-lab-lvm` | 2224 | `lvm2` | Physical Volumes, Volume Groups, Logical Volumes |
-| `raid-lab-zfs` | 2225 | `zfsutils-linux` | ZFS pools, datasets, snapshots |
+| `raid-lab-lvm` | dynamic | `lvm2` | Physical Volumes, Volume Groups, Logical Volumes |
+| `raid-lab-zfs` | dynamic | `zfsutils-linux` | ZFS pools, datasets, snapshots |
+
+> All host ports are dynamically allocated. Use `qlab ports` to see the actual mappings.
 
 Each VM is provisioned with **4 extra virtual disks** (1 GB each) that appear as `/dev/vdb`, `/dev/vdc`, `/dev/vdd`, `/dev/vde`.
 
