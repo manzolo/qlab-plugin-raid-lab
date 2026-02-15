@@ -6,8 +6,6 @@ set -euo pipefail
 PLUGIN_NAME="raid-lab"
 LVM_VM="raid-lab-lvm"
 ZFS_VM="raid-lab-zfs"
-LVM_SSH_PORT=2224
-ZFS_SSH_PORT=2225
 DISK_SIZE="1G"
 DISK_COUNT=4
 
@@ -17,10 +15,10 @@ echo "============================================="
 echo ""
 echo "  This lab creates two VMs, each with 4 extra disks:"
 echo ""
-echo "    1. raid-lab-lvm  (SSH port $LVM_SSH_PORT)"
+echo "    1. raid-lab-lvm"
 echo "       Practice LVM: pvcreate, vgcreate, lvcreate"
 echo ""
-echo "    2. raid-lab-zfs  (SSH port $ZFS_SSH_PORT)"
+echo "    2. raid-lab-zfs"
 echo "       Practice ZFS: zpool, zfs snapshot, send/receive"
 echo ""
 
@@ -315,14 +313,23 @@ echo ""
 info "Step 6: Starting VMs"
 echo ""
 
-info "Starting $LVM_VM (SSH port $LVM_SSH_PORT)..."
-start_vm "$OVERLAY_LVM" "$CIDATA_LVM" "$MEMORY" "$LVM_VM" "$LVM_SSH_PORT" \
-    "${LVM_DRIVE_ARGS[@]}"
+# Multi-VM: resource check, cleanup trap, rollback on failure
+MEMORY_TOTAL=$(( MEMORY * 2 ))
+check_host_resources "$MEMORY_TOTAL" 2
+declare -a STARTED_VMS=()
+register_vm_cleanup STARTED_VMS
+
+info "Starting $LVM_VM..."
+start_vm_or_fail STARTED_VMS "$OVERLAY_LVM" "$CIDATA_LVM" "$MEMORY" "$LVM_VM" auto \
+    "${LVM_DRIVE_ARGS[@]}" || exit 1
 echo ""
 
-info "Starting $ZFS_VM (SSH port $ZFS_SSH_PORT)..."
-start_vm "$OVERLAY_ZFS" "$CIDATA_ZFS" "$MEMORY" "$ZFS_VM" "$ZFS_SSH_PORT" \
-    "${ZFS_DRIVE_ARGS[@]}"
+info "Starting $ZFS_VM..."
+start_vm_or_fail STARTED_VMS "$OVERLAY_ZFS" "$CIDATA_ZFS" "$MEMORY" "$ZFS_VM" auto \
+    "${ZFS_DRIVE_ARGS[@]}" || exit 1
+
+# Successful start — disable cleanup trap
+trap - EXIT
 
 echo ""
 echo "============================================="
@@ -332,12 +339,10 @@ echo ""
 echo "  LVM VM:"
 echo "    SSH:   qlab shell $LVM_VM"
 echo "    Log:   qlab log $LVM_VM"
-echo "    Port:  $LVM_SSH_PORT"
 echo ""
 echo "  ZFS VM:"
 echo "    SSH:   qlab shell $ZFS_VM"
 echo "    Log:   qlab log $ZFS_VM"
-echo "    Port:  $ZFS_SSH_PORT"
 echo ""
 echo "  Credentials (both VMs):"
 echo "    Username: labuser"
