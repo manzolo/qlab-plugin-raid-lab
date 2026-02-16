@@ -276,11 +276,17 @@ echo ""
 
 OVERLAY_LVM="$LAB_DIR/${LVM_VM}-disk.qcow2"
 if [[ -f "$OVERLAY_LVM" ]]; then rm -f "$OVERLAY_LVM"; fi
-create_overlay "$CLOUD_IMAGE_FILE" "$OVERLAY_LVM" "${QLAB_DISK_SIZE:-}"
+create_overlay "$CLOUD_IMAGE_FILE" "$OVERLAY_LVM" "${QLAB_DISK_SIZE:-}" || {
+    error "Failed to create overlay disk for LVM VM."
+    exit 1
+}
 
 OVERLAY_ZFS="$LAB_DIR/${ZFS_VM}-disk.qcow2"
 if [[ -f "$OVERLAY_ZFS" ]]; then rm -f "$OVERLAY_ZFS"; fi
-create_overlay "$CLOUD_IMAGE_FILE" "$OVERLAY_ZFS" "${QLAB_DISK_SIZE:-}"
+create_overlay "$CLOUD_IMAGE_FILE" "$OVERLAY_ZFS" "${QLAB_DISK_SIZE:-}" || {
+    error "Failed to create overlay disk for ZFS VM."
+    exit 1
+}
 echo ""
 
 # =============================================
