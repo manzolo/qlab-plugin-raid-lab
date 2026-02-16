@@ -81,6 +81,7 @@ info "Creating cloud-init for $LVM_VM..."
 cat > "$LAB_DIR/user-data-lvm" <<'USERDATA'
 #cloud-config
 hostname: raid-lab-lvm
+package_update: true
 users:
   - name: labuser
     plain_text_passwd: labpass
@@ -163,6 +164,7 @@ info "Creating cloud-init for $ZFS_VM..."
 cat > "$LAB_DIR/user-data-zfs" <<'USERDATA'
 #cloud-config
 hostname: raid-lab-zfs
+package_update: true
 users:
   - name: labuser
     plain_text_passwd: labpass
