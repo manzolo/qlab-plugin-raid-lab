@@ -103,9 +103,11 @@ lsblk
 On the **LVM VM**:
 
 ```bash
-sudo pvcreate /dev/vdb /dev/vdc /dev/vdd
+sudo pvcreate -f /dev/vdb /dev/vdc /dev/vdd
 sudo pvs
 ```
+
+> The `-f` flag forces creation, wiping any existing LVM signatures on the disks without prompting for confirmation.
 
 **Expected output:**
 
@@ -126,9 +128,11 @@ sudo vgs
 ### 2.3 Create a logical volume
 
 ```bash
-sudo lvcreate -L 800M -n data labvg
+sudo lvcreate --yes -L 800M -n data labvg
 sudo lvs
 ```
+
+> The `--yes` flag automatically confirms any prompts (e.g., wiping existing filesystem signatures), which is needed for scripted or repeated runs.
 
 ### 2.4 Format and mount
 
@@ -238,6 +242,22 @@ cat /tank/data/file.txt
 ```
 
 **Expected output:** `hello ZFS` (the original content is restored).
+
+---
+
+## Cleanup — Resetting LVM State
+
+If you need to start the LVM exercises over, clean up all LVM structures and disk signatures:
+
+```bash
+sudo umount /mnt 2>/dev/null; true
+sudo lvremove -f labvg/data 2>/dev/null; true
+sudo vgremove -f labvg 2>/dev/null; true
+sudo pvremove -ff /dev/vdb /dev/vdc /dev/vdd /dev/vde 2>/dev/null; true
+sudo wipefs -a /dev/vdb /dev/vdc /dev/vdd /dev/vde 2>/dev/null; true
+```
+
+> The `-ff` flag on `pvremove` forces removal even if the physical volume is still referenced by a volume group. `wipefs -a` erases all filesystem and partition-table signatures so the disks appear completely clean for the next run.
 
 ---
 
